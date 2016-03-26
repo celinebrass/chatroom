@@ -1,9 +1,20 @@
 var express = require('express');
 var router = express.Router();
 
-/* GET home page. */
-router.get('/', function(req, res, next) {
-  res.render('index', { title: 'Express' });
+var async = require('async');
+
+/*GET Existing Users current history*/
+router.get('/userstats', isLoggedIn, function(req, res) {
+    var user = req.user;
+    async.waterfalll([
+        function (done) {
+            async.forEach(user.pools, function(pool, callback) {
+                Pool.findById(pool, function(err, poolObj) {
+                    
+                });
+            })
+        }
+    ])
 });
 
 module.exports = router;
