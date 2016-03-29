@@ -10,6 +10,7 @@ var userSchema = mongoose.Schema({
     queries on these fields become extremely fast.*/
 
     phoneNumber             : { type: String,  required: false,  unique: true, index: true },
+    
     /*session code is how the client sends a request for a users data once they have logged in.
     This means they do not have to log in every time they open the app.*/
     session_code            : { type: String,  required, false,  unique: true,  index: true },

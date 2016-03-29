@@ -1,20 +1,22 @@
 var express = require('express');
 var router = express.Router();
 
-var async = require('async');
+/* GET home page. */
+router.get('/', function(req, res) {
+    res.render('index', { title: 'Express' });
+});
+/* GET Hello World page. */
+router.get('/helloworld', function(req, res) {
+    res.json("HelloWorld");
+});
 
-/*GET Existing Users current history*/
-router.get('/userstats', isLoggedIn, function(req, res) {
-    var user = req.user;
-    async.waterfalll([
-        function (done) {
-            async.forEach(user.pools, function(pool, callback) {
-                Pool.findById(pool, function(err, poolObj) {
-                    
-                });
-            })
-        }
-    ])
+/* GET Userlist page. */
+router.get('/userlist', function(req, res) {
+    var db = req.db;
+    var collection = db.get('usercollection');
+    collection.find({},{},function(e,docs){
+        res.json(docs)
+    });
 });
 
 module.exports = router;
