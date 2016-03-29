@@ -29,7 +29,7 @@ router.get('/userlist', function(req, res) {
 /* GET Userlist page. */
 router.get('/newUser', function(req, res) {
     var user = new User({
-        phoneNumber:"17577630609",
+        phoneNumber:"1006668484",
         fName: "Celine",
         lname: "Brass",
         password: "GOTEAMMM"
