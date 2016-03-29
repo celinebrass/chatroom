@@ -9,7 +9,7 @@ var gameSchema = new mongoose.Schema({
     [
         {
             playerId  : ObjectId,
-            score    : Integer
+            score    : Number
         }
     ],
 	createdOn	:	{ type: Date,    required: false,  unique: false, default: Date.now },
