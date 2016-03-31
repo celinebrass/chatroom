@@ -6,6 +6,9 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var configDB = require('./config/database.js');
 var mongoose = require('mongoose');
+var passport = require("passport");
+var LocalStrategy = require('passport-local').Strategy;
+var session = require('express-session');
 
 // New Code
 var mongo = require('mongodb');
@@ -30,6 +33,8 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(passport.initialize());
+app.use(passport.session());
 
 // Make our db accessible to our router
 app.use(function(req,res,next){
@@ -71,4 +76,22 @@ app.use(function(err, req, res, next) {
     });
 });
 
+passport.use('local-login', new LocalStrategy(function(username, password, done){
+    Users.findOne({ username : username},function(err,user){
+        if(err) { return done(err); }
+        if(!user){
+            return done(null, false, { message: 'Incorrect username.' });
+        }
+        else {
+            console.log("found a user woot woot")
+            // if the user is found but the password is wrong
+            if (!user.validPassword(password)){
+                return done(null, false, req.flash('loginMessageError', 'Invalid password')); // create the loginMessage and save it to session as flashdata
+            }
+            else {
+                return done(null, user)
+            }
+        }
+    });
+}));
 module.exports = app;
