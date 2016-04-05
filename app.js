@@ -1,4 +1,3 @@
-var express = require('express');
 var path = require('path');
 var favicon = require('serve-favicon');
 var logger = require('morgan');
@@ -10,6 +9,8 @@ var passport = require("passport");
 var LocalStrategy = require('passport-local').Strategy;
 var session = require('express-session');
 
+var sessionStore = new session.MemoryStore();
+
 // New Code
 var mongo = require('mongodb');
 var monk = require('monk');
@@ -19,7 +20,9 @@ var db = monk('localhost:27017/PongStats');
 var routes = require('./routes/index');
 var users = require('./routes/users');
 
+//Load Config files
 mongoose.connect(configDB.url);
+require('./config/passport')(passport); // pass passport for configuration
 
 var app = express();
 // view engine setup
@@ -33,26 +36,22 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
-app.use(passport.initialize());
-app.use(passport.session());
 
-// Make our db accessible to our router
-app.use(function(req,res,next){
-    req.db = db;
-    next();
-});
+// required for passport
+app.use(session({
+    key: 'connect.sid',
+    secret: 'ilovescotchscotchyscotchscotch',
+    store: sessionStore,
+    resave: true,
+    saveUninitialized: true
+})); // session secret
+app.use(passport.initialize());
+app.use(passport.session()); // persistent login sessions
+
+var routes = require('./routes/index')(passport);
 
 app.use('/', routes);
 app.use('/users', users);
-
-/// catch 404 and forwarding to error handler
-app.use(function(req, res, next) {
-    var err = new Error('Not Found');
-    err.status = 404;
-    next(err);
-});
-
-/// error handlers
 
 // development error handler
 // will print stacktrace
@@ -76,22 +75,24 @@ app.use(function(err, req, res, next) {
     });
 });
 
-passport.use('local-login', new LocalStrategy(function(username, password, done){
-    Users.findOne({ username : username},function(err,user){
-        if(err) { return done(err); }
-        if(!user){
-            return done(null, false, { message: 'Incorrect username.' });
-        }
-        else {
-            console.log("found a user woot woot")
-            // if the user is found but the password is wrong
-            if (!user.validPassword(password)){
-                return done(null, false, req.flash('loginMessageError', 'Invalid password')); // create the loginMessage and save it to session as flashdata
-            }
-            else {
-                return done(null, user)
-            }
-        }
-    });
-}));
+app.set('port', process.env.PORT || 3000);
+
+var server = app.listen(app.get('port'), function () {
+    console.log('Express server listening on port ' + server.address().port + ' and address ' + server.address().address);
+});
+
+
+// Make our db accessible to our router
+app.use(function(req,res,next){
+    req.db = db;
+    next();
+});
+
+/// catch 404 and forwarding to error handler
+app.use(function(req, res, next) {
+    var err = new Error('Not Found');
+    err.status = 404;
+    next(err);
+});
+
 module.exports = app;
