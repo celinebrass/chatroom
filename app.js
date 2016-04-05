@@ -1,3 +1,6 @@
+var express = require('express');
+var router = express.Router();
+
 var path = require('path');
 var favicon = require('serve-favicon');
 var logger = require('morgan');
