@@ -6,6 +6,11 @@ var LocalStrategy   = require('passport-local').Strategy;
 // load up the user model
 var User            = require('../models/user');
 
+//function for creating UUID's
+function S4() {
+    return (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1);
+}
+
 // expose this function to our app using module.exports
 module.exports = function(passport) {
 
@@ -40,11 +45,11 @@ module.exports = function(passport) {
         passReqToCallback : true // allows us to pass back the entire request to the callback
     },
     function(req, phoneNumber, password, done) {
-
+        console.log("are we even getting here???");
         // asynchronous
         // User.findOne wont fire unless data is sent back
         process.nextTick(function() {
-
+            console.log("IN THE PASSPORT FUNCTION ");
              // find a user whose phoneNumber is the same as the forms phoneNumber
             // we are checking to see if the user trying to login already exists
             User.findOne({ 'local.phoneNumber' :  phoneNumber.toLowerCase() }, function(err, user) {
@@ -61,16 +66,14 @@ module.exports = function(passport) {
                     // create the user
                     var newUser            = new User();
 
+                    var delim = "-";
+                    var newUuid = (S4() + S4() + delim + S4() + delim + S4() + delim + S4() + delim + S4() + S4() + S4());
+
                     // set the user's local credentials
                     newUser.local.phoneNumber    = phoneNumber.toLowerCase();
-                    newUser.local.password = newUser.generateHash(password);
-                    var delim = "-";
-                    function S4() {
-                        return (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1);
-                    }
-                    var newUuid = (S4() + S4() + delim + S4() + delim + S4() + delim + S4() + delim + S4() + S4() + S4());
-                    newUser.local.uuid = newUuid;
-                    newUser.local.account_level = 'researcher'
+                    newUser.local.password       = newUser.generateHash(password);
+                    newUser.local.uuid           = newUuid;
+                    newUser.local.account_level  = 'researcher';
                     // save the user
                     newUser.save(function(err) {
                         if (err)
@@ -82,7 +85,6 @@ module.exports = function(passport) {
             });
         });
     }));
-
 
     passport.use('local-login', new LocalStrategy({
         // by default, local strategy uses username and password, we will override with phoneNumber
