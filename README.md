@@ -1,6 +1,8 @@
 # chatroom
 NodeJS api written to teach CUAppDev training program about interacting with APIs from iOS
 
+Documentation for this api can be found at https://docs.chatroom.apiary.io
+
 Install Instructions : 
 
 1.Install NodeJs from https://nodejs.org/en/download/stable/
@@ -19,7 +21,7 @@ Install Instructions :
   
 4.Clone the Chatroom application with `$ git clone https://github.com/celinebrass/chatroom.git`
 
-5. Go into the Chatroom directory you just cloned and run the following commands
+5.Go into the Chatroom directory you just cloned and run the following commands
 
     `$ npm install`
     
