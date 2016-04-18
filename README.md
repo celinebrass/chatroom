@@ -1,7 +1,7 @@
 # chatroom
 NodeJS api written to teach CUAppDev training program about interacting with APIs from iOS
 
-Documentation for this api can be found at https://docs.chatroom.apiary.io
+Documentation for this api can be found at http://docs.chatroom.apiary.io
 
 Install Instructions : 
 
