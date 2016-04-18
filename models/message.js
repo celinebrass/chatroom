@@ -4,7 +4,7 @@ var ObjectId = mongoose.Schema.Types.ObjectId;
 
 var messageSchema = new mongoose.Schema({
 
-	message	: 	{ type: String,  required: true,  unique: false },
+	text    : 	{ type: String,  required: true,  unique: false },
 	sender	: 	{ type: String,  required: true,  unique: false },
 	group   :   { type: String,  required: true,  unique: false},
 

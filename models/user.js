@@ -18,7 +18,7 @@ var userSchema = mongoose.Schema({
         session_expires         : { type: Date,    required: false,  unique: false, index: false},
 
         //Basic user info.  Password is stored as a hash value
-        displayname             : { type: String,  required: false,  unique: true},
+        displayName             : { type: String,  required: true,  unique: false},
         password                : { type: String,  required: false,  unique: false, index: false },
 
         //Default save the current date as the creation date

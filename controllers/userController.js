@@ -1,12 +1,14 @@
 var User = require('../models/user');
 
+
 module.exports = {
 
     login: function(req, res, next){
         User.findOne({'local.phoneNumber' : req.body.phoneNumber}, function(err, userObj){
             if (err){
                 res.status(500).json({
-                    message: "Some error occurred."
+                    message: "Some error occurred while finding this user.",
+                    error : err
                 });
             }
             else if (userObj){
@@ -23,10 +25,12 @@ module.exports = {
                             });
                         }
                         else {
-                            delete userObj.local.password;
+                            console.log(userObj);
+                            var user = filterUser(userObj);
                             res.status(200).json({
                                 status: "success",
-                                user: userObj.local
+                                user: user,
+                                session_code : newSessionCode
                             });
                         }
                     });
@@ -45,7 +49,7 @@ module.exports = {
         });
     },
 
-    register: function(req, res, next){
+    register : function(req, res, next){
         User.findOne({'local.phoneNumber' : req.body.phoneNumber}, function (err, userObj){
 
             if (err){
@@ -57,35 +61,62 @@ module.exports = {
             else {
                 var expireTime = Date.now() + 2*24*60*60*1000
                 var expireDate = new Date(expireTime)
-                console.log(req);
-                console.log(req.body.phoneNumber);
+                var newSessionCode = createNewSessionID();
                 var newUser = new User({
                     "local.phoneNumber" : req.body.phoneNumber,
                     "local.displayName" : req.body.displayName,
-                    "local.session_code": createNewSessionID(),
-                    "local.session_expires" : expireDate,
+                    "local.session_code": newSessionCode,
+                    "local.session_expires" : expireDate
                 });
                 newUser.local.password = newUser.generateHash(req.body.password);
                 newUser.save(function(err){
                     if (err){
                         console.log(err);
                         res.status(500).json({
-                            "message": "Some error occurred saving the user",
+                            "message": "Some error occurred saving the user.",
                             "error" : err
                         });
                     }
                     else {
-                        delete newUser.local.password;
+                        var user = filterUser(newUser);
+                        console.log(user);
+                        console.log(newUser.local.session_code);
                         res.status(200).json({
-                            "user" : newUser.local
+                            "user" : user,
+                            "session_code" : newSessionCode
                         });
                     }
                 })
             }
         });
+    },
+
+    getAllUsers : function(req, res, next){
+        User.find({}, function(err, users) {
+            if (err){
+                res.status(500).json({
+                    "message" : "Some internal error occurred."
+                });
+            }
+            else {
+                var filteredUsers = users.map(filterUser);
+                res.status(200).json({
+                    users : filteredUsers
+                });
+            }
+        });
     }
 }
 
+function filterUser(user){
+    var filteredUser = {
+        "id" : user.id,
+        "displayName" : user.local.displayName,
+        "phoneNumber" : user.local.phoneNumber
+    };
+
+    return filteredUser;
+}
 //Functions for creating new SessionId's
 function S4() {
     return (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1);
