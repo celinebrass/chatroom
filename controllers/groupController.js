@@ -78,15 +78,9 @@ module.exports = {
     },
 
     getGroup : function(req, res, next){
-        console.log("in controller");
-        console.log(req.url);
         var url_parts = url.parse(req.url, true);
-        console.log("got heeeere");
         var query = url_parts.query;
-        console.log("got here");
-        console.log(query);
         var groupId = query.groupId;
-        console.log(groupId);
         async.waterfall([
             function (done){
                 Group.findById(groupId, function(err, groupObj){
@@ -97,7 +91,6 @@ module.exports = {
                         });
                     }
                     else if (groupObj){
-                        console.log("found groupObj")
                         if (groupObj.members.indexOf(req.user.id) != -1){
                             done(err, groupObj);
                         }
@@ -116,10 +109,7 @@ module.exports = {
             }, function(groupObj, done){
                 var messageObj = [];
                 Message.find({group : groupObj.id}, function(err, messages){
-                    console.log(err);
-                    console.log(messages);
                     if (err){
-                        console.log(err);
                         res.status(500).json({
                             message: "Some error occurred.",
                             error : err
@@ -127,7 +117,6 @@ module.exports = {
                     }
                     else {
                         var messageObjs = [];
-                        console.log("in messages");
                         async.forEach(messages, function(message, callback){
                             var messObj = {};
                             User.findById(message.sender, function (err, userObj){

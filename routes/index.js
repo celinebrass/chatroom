@@ -63,8 +63,9 @@ module.exports = function (){
 
 /* route middleware to make sure a user is logged in */
 function authorizePost(req, res, next) {
-    // if user is authenticated in the session, carry on
+    console.log(req.body);
     User.findOne({"local.session_code" : req.body.session_code}, function (err, userObj){
+        console.log(userObj);
         if (err){
             res.status(500).json({
                 message: "some error occured validating this request.",

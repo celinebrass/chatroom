@@ -51,9 +51,11 @@ module.exports = {
 
     register : function(req, res, next){
         User.findOne({'local.phoneNumber' : req.body.phoneNumber}, function (err, userObj){
-
             if (err){
-                res.status(500).json({"message":"Some error occurred"});
+                res.status(500).json({
+                    "message":"Some error occurred",
+                    "err" : err
+                });
             }
             else if (userObj){
                 res.status(403).json({"message":"This phone number is already in use."});
@@ -71,7 +73,6 @@ module.exports = {
                 newUser.local.password = newUser.generateHash(req.body.password);
                 newUser.save(function(err){
                     if (err){
-                        console.log(err);
                         res.status(500).json({
                             "message": "Some error occurred saving the user.",
                             "error" : err
@@ -79,8 +80,6 @@ module.exports = {
                     }
                     else {
                         var user = filterUser(newUser);
-                        console.log(user);
-                        console.log(newUser.local.session_code);
                         res.status(200).json({
                             "user" : user,
                             "session_code" : newSessionCode
