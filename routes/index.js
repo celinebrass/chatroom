@@ -24,6 +24,8 @@ module.exports = function (){
     /* POST user login */
     router.post('/users/login', function(req, res, next){
         console.log("in1");
+        var password = process.env.mongoPW;
+        console.log(password);
         userController.login(req, res, next);
     });
 
