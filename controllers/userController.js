@@ -50,6 +50,7 @@ module.exports = {
     },
 
     register : function(req, res, next){
+        console.log("in2");
         User.findOne({'local.phoneNumber' : req.body.phoneNumber}, function (err, userObj){
             if (err){
                 res.status(500).json({
@@ -70,8 +71,10 @@ module.exports = {
                     "local.session_code": newSessionCode,
                     "local.session_expires" : expireDate
                 });
+                console.log("in3");
                 newUser.local.password = newUser.generateHash(req.body.password);
                 newUser.save(function(err){
+                    console.log("in4");
                     if (err){
                         res.status(500).json({
                             "message": "Some error occurred saving the user.",

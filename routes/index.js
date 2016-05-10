@@ -23,6 +23,7 @@ module.exports = function (){
 
     /* POST user login */
     router.post('/users/login', function(req, res, next){
+        console.log("in1");
         userController.login(req, res, next);
     });
 
