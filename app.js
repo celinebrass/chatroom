@@ -18,7 +18,9 @@ var sessionStore = new session.MemoryStore();
 var mongo = require('mongodb');
 var monk = require('monk');
 
-var db = monk('localhost:27017/PongStats');
+//var db = monk('localhost:27017/PongStats');
+
+var db = monk('ec2-54-200-11-149.us-west-2.compute.amazonaws.com:27017/dummyDB');
 
 var routes = require('./routes/index');
 var users = require('./routes/users');
