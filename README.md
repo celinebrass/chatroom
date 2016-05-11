@@ -27,13 +27,13 @@ Install Instructions :
 
 5.Go into the Chatroom directory you just cloned using `$ cd chatroom` and run the following commands:
     
-    `$ npm install` (This step reads the package.json file and installs all necessary Node Modules.)
-    `$ mkdir data` (This step creates an empty "data" folder inside you chatroom application.)
+    $ npm install (This step reads the package.json file and installs all necessary Node Modules.)
+    $ mkdir data (This step creates an empty "data" folder inside you chatroom application.)
   
 6.In a SEPARATE teminal window, navigate to ~<PATH>/mongodb/bin (wherever you stored your mongo installation) and run `./mongod --dbpath ~/<PATH TO DATA FOLDER YOU JUST CREATED IN STEP 5b>`
     
-    Example: `$ ./mongod --dbpath ~/CUAPPDev/chatroom/data`
+    Example: $ ./mongod --dbpath ~/CUAPPDev/chatroom/data
 
-7.From your original terminal window, run `$ npm start`
+7.From your original terminal window, run $ npm start
 
 You should now have a running server.  Check to see if it worked by navigating to localhost:3000 in your browser.  You should see a success message.
