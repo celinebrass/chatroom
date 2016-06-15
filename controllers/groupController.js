@@ -5,7 +5,7 @@ var Group = require('../models/group');
 var User = require('../models/user');
 var Message = require('../models/message');
 
-
+//arbitrary comment
 module.exports = {
     getAllGroups : function(req, res, next){
         console.log("here");
